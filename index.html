@@ -794,11 +794,20 @@
 
   async function start() {
     try {
-      if (!window.supabase || !window.SUPABASE_URL ||
-          !window.SUPABASE_PUBLISHABLE_KEY ||
-          window.SUPABASE_URL.includes("ISI_PROJECT_URL")) {
-        throw new Error("Periksa URL dan Publishable Key pada config.js.");
-      }
+      if (
+  !window.supabase ||
+  typeof SUPABASE_URL === "undefined" ||
+  typeof SUPABASE_PUBLISHABLE_KEY === "undefined" ||
+  SUPABASE_URL.includes("ISI_PROJECT_URL") ||
+  SUPABASE_PUBLISHABLE_KEY.includes("ISI_PUBLISHABLE_KEY")
+) {
+  throw new Error("Periksa URL dan Publishable Key pada config.js.");
+}
+
+client = window.supabase.createClient(
+  SUPABASE_URL,
+  SUPABASE_PUBLISHABLE_KEY
+);
 
       client = window.supabase.createClient(
         window.SUPABASE_URL,
