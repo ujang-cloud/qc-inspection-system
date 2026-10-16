@@ -803,12 +803,6 @@
 ) {
   throw new Error("Periksa URL dan Publishable Key pada config.js.");
 }
-
-client = window.supabase.createClient(
-  SUPABASE_URL,
-  SUPABASE_PUBLISHABLE_KEY
-);
-
       client = window.supabase.createClient(
         window.SUPABASE_URL,
         window.SUPABASE_PUBLISHABLE_KEY
