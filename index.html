@@ -630,36 +630,117 @@ function addDynamicField() {
 document.getElementById("addFieldButton")
   .addEventListener("click", addDynamicField);
   async function createForm(event) {
-    event.preventDefault();
+  event.preventDefault();
 
-    if (!isAdmin()) {
-      message("Hanya admin yang dapat membuat formulir.", true);
+  if (!isAdmin()) {
+    message("Hanya admin yang dapat membuat formulir.", true);
+    return;
+  }
+
+  const nama_form = $("formName").value.trim();
+  const deskripsi = $("formDescription").value.trim();
+
+  if (!nama_form) {
+    message("Nama formulir wajib diisi.", true);
+    return;
+  }
+
+  // Ambil semua kolom yang dibuat admin
+  const fieldCards = document.querySelectorAll(
+    "#dynamicFields > .panel"
+  );
+
+  const fields = [];
+
+  for (const card of fieldCards) {
+    const label = card.querySelector(
+      ".dynamic-field-label"
+    ).value.trim();
+
+    const type = card.querySelector(
+      ".dynamic-field-type"
+    ).value;
+
+    const required = card.querySelector(
+      ".dynamic-field-required"
+    ).checked;
+
+    if (!label) {
+      message("Nama setiap kolom wajib diisi.", true);
       return;
     }
 
-    const nama_form = $("formName").value.trim();
-    const deskripsi = $("formDescription").value.trim();
+    const field = {
+      name: "field_" + (fields.length + 1),
+      label: label,
+      type: type,
+      required: required
+    };
 
-    if (!nama_form) return;
+    // Simpan pilihan dropdown
+    if (type === "select") {
+      const optionsText = card.querySelector(
+        ".dynamic-field-options"
+      ).value;
 
-    const { error } = await client.from("inspection_forms").insert({
-      nama_form,
-      deskripsi,
-      fields: [],
-      aktif: true,
-      created_by: currentUser.id
-    });
+      const options = optionsText
+        .split("\n")
+        .map(item => item.trim())
+        .filter(item => item !== "");
 
-    if (error) {
-      message("Gagal menyimpan formulir: " + error.message, true);
-      return;
+      if (options.length === 0) {
+        message(
+          "Isi pilihan dropdown untuk kolom: " + label,
+          true
+        );
+        return;
+      }
+
+      field.options = options;
     }
+
+    fields.push(field);
+  }
+
+  const button = $("createForm").querySelector(
+    'button[type="submit"]'
+  );
+
+  button.disabled = true;
+  button.textContent = "Menyimpan...";
+
+  try {
+    const { error } = await client
+      .from("inspection_forms")
+      .insert({
+        nama_form: nama_form,
+        deskripsi: deskripsi,
+        fields: fields,
+        aktif: true,
+        created_by: currentUser.id
+      });
+
+    if (error) throw error;
 
     $("createForm").reset();
-    message("Formulir berhasil dibuat.");
+    $("dynamicFields").innerHTML = "";
+    fieldCounter = 0;
+
+    message("Formulir dan kolom berhasil disimpan.");
+
     await loadForms();
     await loadDashboard();
+
+  } catch (error) {
+    message(
+      "Gagal menyimpan formulir: " + error.message,
+      true
+    );
+  } finally {
+    button.disabled = false;
+    button.textContent = "Simpan Formulir";
   }
+}
 
   function openInspectionForm(form) {
     currentForm = form;
