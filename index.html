@@ -549,7 +549,86 @@
       });
     });
   }
+// Membuat kolom formulir secara dinamis
+let fieldCounter = 0;
 
+function addDynamicField() {
+  fieldCounter++;
+
+  const container = document.getElementById("dynamicFields");
+  const fieldId = "dynamic_field_" + fieldCounter;
+
+  const wrapper = document.createElement("div");
+  wrapper.className = "panel";
+  wrapper.style.marginTop = "12px";
+
+  wrapper.innerHTML = `
+    <h4>Kolom ${fieldCounter}</h4>
+
+    <label>Nama Kolom</label>
+    <input
+      type="text"
+      class="dynamic-field-label"
+      placeholder="Contoh: Nomor Lot"
+      required
+    >
+
+    <label>Jenis Isian</label>
+    <select class="dynamic-field-type">
+      <option value="text">Teks</option>
+      <option value="number">Angka</option>
+      <option value="date">Tanggal</option>
+      <option value="select">Pilihan Dropdown</option>
+      <option value="textarea">Catatan Panjang</option>
+    </select>
+
+    <div class="dynamic-options hidden">
+      <label>Daftar Pilihan</label>
+      <textarea
+        class="dynamic-field-options"
+        placeholder="Sesuai&#10;Tidak Sesuai"
+        rows="3"
+      ></textarea>
+      <p class="muted">Tuliskan satu pilihan pada setiap baris.</p>
+    </div>
+
+    <label>
+      <input
+        type="checkbox"
+        class="dynamic-field-required"
+        style="width:auto; margin-right:6px"
+      >
+      Wajib diisi
+    </label>
+
+    <br><br>
+
+    <button type="button" class="danger remove-dynamic-field">
+      Hapus Kolom
+    </button>
+  `;
+
+  container.appendChild(wrapper);
+
+  const typeSelect = wrapper.querySelector(".dynamic-field-type");
+  const optionsBox = wrapper.querySelector(".dynamic-options");
+
+  typeSelect.addEventListener("change", () => {
+    optionsBox.classList.toggle(
+      "hidden",
+      typeSelect.value !== "select"
+    );
+  });
+
+  wrapper.querySelector(".remove-dynamic-field")
+    .addEventListener("click", () => {
+      wrapper.remove();
+    });
+}
+
+// Mengaktifkan tombol Tambah Kolom
+document.getElementById("addFieldButton")
+  .addEventListener("click", addDynamicField);
   async function createForm(event) {
     event.preventDefault();
 
