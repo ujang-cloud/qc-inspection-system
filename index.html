@@ -743,82 +743,174 @@ document.getElementById("addFieldButton")
 }
 
   function openInspectionForm(form) {
-    currentForm = form;
-    $("inspectionTitle").textContent = form.nama_form;
+  currentForm = form;
+  $("inspectionTitle").textContent = form.nama_form;
 
-    const fields = Array.isArray(form.fields) ? form.fields : [];
+  const fields = Array.isArray(form.fields) ? form.fields : [];
+  const container = $("inspectionFields");
 
-    if (!fields.length) {
-      $("inspectionFields").innerHTML = `
-        <p class="muted">
-          Formulir ini belum memiliki kolom khusus. Kamu masih bisa
-          menyimpan catatan inspeksi di bawah.
-        </p>
-        <label for="inspectionNotes">Catatan / hasil inspeksi</label>
-        <textarea id="inspectionNotes" rows="5"
-          placeholder="Tuliskan hasil pemeriksaan..." required></textarea>
-      `;
-    } else {
-      $("inspectionFields").innerHTML = fields.map((field, index) => {
-        const label = escapeHtml(field.label || field.name || "Kolom " + (index + 1));
-        const name = escapeHtml(field.name || "field_" + index);
-        const type = ["text", "number", "date"].includes(field.type)
-          ? field.type : "text";
+  container.innerHTML = "";
 
-        return `
-          <label for="${name}">${label}</label>
-          <input id="${name}" name="${name}" type="${type}"
-            ${field.required ? "required" : ""}>
-        `;
-      }).join("") + `
-        <label for="inspectionNotes">Catatan tambahan</label>
-        <textarea id="inspectionNotes" rows="3"></textarea>
-      `;
-    }
+  if (fields.length === 0) {
+    container.innerHTML = `
+      <p class="muted">
+        Formulir ini belum memiliki kolom khusus.
+      </p>
 
-    $("inspectionPanel").classList.remove("hidden");
-    $("inspectionPanel").scrollIntoView({ behavior: "smooth" });
+      <label for="inspectionNotes">
+        Catatan / Hasil Inspeksi
+      </label>
+
+      <textarea
+        id="inspectionNotes"
+        rows="5"
+        placeholder="Tuliskan hasil pemeriksaan..."
+        required
+      ></textarea>
+    `;
+  } else {
+    fields.forEach((field, index) => {
+      const fieldName = field.name || "field_" + (index + 1);
+      const fieldId = "inspection_" + index;
+      const label = field.label || fieldName;
+
+      const wrapper = document.createElement("div");
+      wrapper.style.marginBottom = "14px";
+
+      const labelElement = document.createElement("label");
+      labelElement.htmlFor = fieldId;
+      labelElement.textContent =
+        label + (field.required ? " *" : "");
+
+      let input;
+
+      if (field.type === "textarea") {
+        input = document.createElement("textarea");
+        input.rows = 4;
+      } else if (field.type === "select") {
+        input = document.createElement("select");
+
+        const placeholder = document.createElement("option");
+        placeholder.value = "";
+        placeholder.textContent = "-- Pilih " + label + " --";
+        input.appendChild(placeholder);
+
+        (Array.isArray(field.options) ? field.options : [])
+          .forEach(optionText => {
+            const option = document.createElement("option");
+            option.value = optionText;
+            option.textContent = optionText;
+            input.appendChild(option);
+          });
+      } else {
+        input = document.createElement("input");
+
+        const allowedTypes = ["text", "number", "date"];
+        input.type = allowedTypes.includes(field.type)
+          ? field.type
+          : "text";
+      }
+
+      input.id = fieldId;
+      input.dataset.fieldName = fieldName;
+      input.required = Boolean(field.required);
+      input.style.width = "100%";
+      input.style.padding = "12px";
+      input.style.marginTop = "7px";
+      input.style.border = "1px solid #cbd5e1";
+      input.style.borderRadius = "8px";
+
+      wrapper.appendChild(labelElement);
+      wrapper.appendChild(input);
+      container.appendChild(wrapper);
+    });
+
+    const notesLabel = document.createElement("label");
+    notesLabel.htmlFor = "inspectionNotes";
+    notesLabel.textContent = "Catatan Tambahan";
+
+    const notes = document.createElement("textarea");
+    notes.id = "inspectionNotes";
+    notes.rows = 3;
+    notes.placeholder = "Catatan tambahan (opsional)";
+    notes.style.width = "100%";
+    notes.style.padding = "12px";
+    notes.style.marginTop = "7px";
+
+    container.appendChild(notesLabel);
+    container.appendChild(notes);
   }
 
+  $("inspectionPanel").classList.remove("hidden");
+  $("inspectionPanel").scrollIntoView({
+    behavior: "smooth"
+  });
+}
+
   async function saveInspection(event) {
-    event.preventDefault();
+  event.preventDefault();
 
-    if (!currentForm) return;
+  if (!currentForm) {
+    message("Pilih formulir terlebih dahulu.", true);
+    return;
+  }
 
-    const values = {};
-    const fields = Array.isArray(currentForm.fields) ? currentForm.fields : [];
+  const fields = Array.isArray(currentForm.fields)
+    ? currentForm.fields
+    : [];
 
-    fields.forEach((field, index) => {
-      const name = field.name || "field_" + index;
-      const element = document.getElementById(name);
-      if (element) values[field.label || name] = element.value;
-    });
+  const values = {};
 
-    const notes = $("inspectionNotes")?.value || "";
+  for (let index = 0; index < fields.length; index++) {
+    const field = fields[index];
+    const fieldName = field.name || "field_" + (index + 1);
 
-    if (!fields.length && !notes.trim()) {
-      message("Isi catatan inspeksi terlebih dahulu.", true);
+    const input = document.querySelector(
+      '#inspectionFields [data-field-name="' + fieldName + '"]'
+    );
+
+    if (!input) continue;
+
+    if (field.required && !input.value.trim()) {
+      input.reportValidity();
+      message("Kolom wajib diisi: " + field.label, true);
       return;
     }
 
-    const { error } = await client.from("inspections").insert({
-      form_id: currentForm.id,
-      petugas_id: currentUser.id,
-      data: values,
-      catatan: notes
-    });
+    values[field.label || fieldName] = input.value;
+  }
 
-    if (error) {
-      message("Gagal menyimpan inspeksi: " + error.message, true);
-      return;
-    }
+  const notes = $("inspectionNotes")?.value || "";
+
+  if (fields.length === 0 && !notes.trim()) {
+    message("Isi catatan inspeksi terlebih dahulu.", true);
+    return;
+  }
+
+  try {
+    const { error } = await client
+      .from("inspections")
+      .insert({
+        form_id: currentForm.id,
+        petugas_id: currentUser.id,
+        data: values,
+        catatan: notes
+      });
+
+    if (error) throw error;
 
     $("inspectionForm").reset();
     $("inspectionPanel").classList.add("hidden");
     currentForm = null;
+
     message("Data inspeksi berhasil disimpan.");
+
     await loadDashboard();
+
+  } catch (error) {
+    message("Gagal menyimpan inspeksi: " + error.message, true);
   }
+}
 
   async function loadRecords() {
     $("recordsBody").innerHTML =
