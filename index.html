@@ -291,16 +291,29 @@
             </p>
 
             <form id="createForm">
-              <label for="formName">Nama formulir</label>
-              <input id="formName" required
-                placeholder="Contoh: Pemeriksaan Bahan Baku">
+  <label for="formName">Nama formulir</label>
+  <input id="formName" required
+    placeholder="Contoh: Pemeriksaan Bahan Baku">
 
-              <label for="formDescription">Deskripsi</label>
-              <textarea id="formDescription"
-                placeholder="Keterangan formulir"></textarea>
+  <label for="formDescription">Deskripsi</label>
+  <textarea id="formDescription"
+    placeholder="Keterangan formulir"></textarea>
 
-              <button type="submit">Simpan Formulir</button>
-            </form>
+  <h3>Kolom Pemeriksaan</h3>
+  <p class="muted">
+    Tambahkan kolom yang akan diisi oleh petugas QC.
+  </p>
+
+  <div id="dynamicFields"></div>
+
+  <button type="button" id="addFieldButton" class="secondary">
+    + Tambah Kolom
+  </button>
+
+  <br><br>
+
+  <button type="submit">Simpan Formulir</button>
+</form>
           </div>
 
           <div class="panel">
