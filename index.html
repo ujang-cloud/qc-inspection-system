@@ -1235,6 +1235,7 @@ async function createPetugas(event) {
 
   $("createForm").addEventListener("submit", createForm);
   $("inspectionForm").addEventListener("submit", saveInspection);
+  $("createPetugasForm").addEventListener("submit", createPetugas);
   $("cancelInspection").addEventListener("click", () => {
     currentForm = null;
     $("inspectionPanel").classList.add("hidden");
