@@ -1088,7 +1088,68 @@ document.getElementById("addFieldButton")
       </tr>
     `).join("") || '<tr><td colspan="2">Belum ada profil.</td></tr>';
   }
+async function createPetugas(event) {
+  event.preventDefault();
 
+  if (!isAdmin()) {
+    message("Hanya admin yang boleh membuat akun petugas.", true);
+    return;
+  }
+
+  const nama = $("petugasNama").value.trim();
+  const email = $("petugasEmail").value.trim();
+  const password = $("petugasPassword").value;
+
+  if (!nama || !email || password.length < 8) {
+    message("Nama, email, dan password minimal 8 karakter wajib diisi.", true);
+    return;
+  }
+
+  const button = $("createPetugasForm").querySelector(
+    'button[type="submit"]'
+  );
+
+  button.disabled = true;
+  button.textContent = "Membuat akun...";
+
+  try {
+    const { data: sessionData } = await client.auth.getSession();
+    const token = sessionData.session?.access_token;
+
+    if (!token) {
+      throw new Error("Sesi login tidak ditemukan. Silakan login ulang.");
+    }
+
+    const response = await fetch(
+      `${window.SUPABASE_URL}/functions/v1/create-petugas`,
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${token}`,
+          "apikey": window.SUPABASE_PUBLISHABLE_KEY
+        },
+        body: JSON.stringify({ nama, email, password })
+      }
+    );
+
+    const result = await response.json();
+
+    if (!response.ok) {
+      throw new Error(result.error || "Gagal membuat akun petugas.");
+    }
+
+    $("createPetugasForm").reset();
+    message("Akun petugas berhasil dibuat.");
+    await loadUsers();
+
+  } catch (error) {
+    message(error.message || "Terjadi kesalahan.", true);
+  } finally {
+    button.disabled = false;
+    button.textContent = "Buat Akun Petugas";
+  }
+}
   async function start() {
     try {
       if (
