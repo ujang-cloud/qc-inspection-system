@@ -367,6 +367,38 @@
             <p>
               Daftar profil yang sudah terdaftar di sistem.
             </p>
+            <div class="panel admin-only">
+  <h3>Tambah Petugas</h3>
+
+  <form id="createPetugasForm">
+    <label for="petugasNama">Nama Petugas</label>
+    <input
+      id="petugasNama"
+      type="text"
+      placeholder="Nama lengkap petugas"
+      required
+    >
+
+    <label for="petugasEmail">Email Petugas</label>
+    <input
+      id="petugasEmail"
+      type="email"
+      placeholder="nama@email.com"
+      required
+    >
+
+    <label for="petugasPassword">Password Awal</label>
+    <input
+      id="petugasPassword"
+      type="password"
+      minlength="8"
+      placeholder="Minimal 8 karakter"
+      required
+    >
+
+    <button type="submit">Buat Akun Petugas</button>
+  </form>
+</div>
             <p class="muted">
               Pembuatan akun dan perubahan peran harus dilakukan melalui
               mekanisme admin yang aman. Halaman ini belum membuat akun baru.
