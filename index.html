@@ -342,7 +342,16 @@
 
             <button id="refreshRecords">Muat Ulang</button>
             <button id="exportCsv">Ekspor CSV</button>
+          <div class="date-filter">
+            <label for="dateStart">Tanggal Mulai</label>
+              <input type="date" id="dateStart">
 
+               <label for="dateEnd">Tanggal Akhir</label>
+              <input type="date" id="dateEnd">
+
+             <button type="button" id="filterDates">Filter Tanggal</button>
+            <button type="button" id="resetDates" class="secondary">Reset</button>
+           </div>
             <div class="table-wrap" style="margin-top:15px">
               <table>
                 <thead>
