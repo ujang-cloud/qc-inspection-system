@@ -1014,12 +1014,30 @@ document.getElementById("addFieldButton")
 
   function renderRecords() {
     const query = $("searchRecords").value.toLowerCase().trim();
+const dateStart = $("dateStart").value;
+const dateEnd = $("dateEnd").value;
 
-    const filtered = allRecords.filter(row =>
-      (row._formName + " " + row._userName + " " +
-       JSON.stringify(row.data || {}) + " " + (row.catatan || ""))
-        .toLowerCase().includes(query)
-    );
+const filtered = allRecords.filter(row => {
+  const searchText = (
+    row._formName + " " +
+    row._userName + " " +
+    JSON.stringify(row.data || {}) + " " +
+    (row.catatan || "")
+  ).toLowerCase();
+
+  const recordDate = new Date(row.created_at);
+  const date = [
+    recordDate.getFullYear(),
+    String(recordDate.getMonth() + 1).padStart(2, "0"),
+    String(recordDate.getDate()).padStart(2, "0")
+  ].join("-");
+
+  const matchSearch = searchText.includes(query);
+  const matchStart = !dateStart || date >= dateStart;
+  const matchEnd = !dateEnd || date <= dateEnd;
+
+  return matchSearch && matchStart && matchEnd;
+});
 
     if (!filtered.length) {
       $("recordsBody").innerHTML =
