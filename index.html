@@ -1306,6 +1306,8 @@ async function createPetugas(event) {
   $("filterTanggalAkhir").value = "";
   renderRecords();
 });
+  $("filterTanggalMulai").addEventListener("change", renderRecords);
+  $("filterTanggalAkhir").addEventListener("change", renderRecords);
   $("filterDates").addEventListener("click", renderRecords);
 
 $("resetDates").addEventListener("click", () => {
