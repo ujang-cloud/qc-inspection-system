@@ -1281,6 +1281,11 @@ async function createPetugas(event) {
   });
 
   $("refreshRecords").addEventListener("click", loadRecords);
+  $("resetFilterTanggal").addEventListener("click", () => {
+  $("filterTanggalMulai").value = "";
+  $("filterTanggalAkhir").value = "";
+  renderRecords();
+});
   $("filterDates").addEventListener("click", renderRecords);
 
 $("resetDates").addEventListener("click", () => {
