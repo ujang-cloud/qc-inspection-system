@@ -339,7 +339,17 @@
             <label for="searchRecords">Cari data</label>
             <input id="searchRecords"
               placeholder="Cari berdasarkan nama formulir atau isi data...">
+          <div style="margin-top:15px;">
+           <label for="filterTanggalMulai">Tanggal Mulai</label>
+            <input type="date" id="filterTanggalMulai">
 
+             <label for="filterTanggalAkhir">Tanggal Akhir</label>
+              <input type="date" id="filterTanggalAkhir">
+
+               <button type="button" id="resetFilterTanggal">
+                 Reset Tanggal
+               </button>
+           </div>
             <button id="refreshRecords">Muat Ulang</button>
             <button id="exportCsv">Ekspor CSV</button>
           <div class="date-filter">
