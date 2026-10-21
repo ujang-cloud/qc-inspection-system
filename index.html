@@ -1016,8 +1016,6 @@ document.getElementById("addFieldButton")
     const query = $("searchRecords").value.toLowerCase().trim();
     const tanggalMulai = $("filterTanggalMulai").value;
     const tanggalAkhir = $("filterTanggalAkhir").value;
-    const dateStart = $("dateStart").value;
-    const dateEnd = $("dateEnd").value;
 
     const filtered = allRecords.filter(row => {
   const searchText = (
@@ -1298,13 +1296,7 @@ async function createPetugas(event) {
 });
   $("filterTanggalMulai").addEventListener("change", renderRecords);
   $("filterTanggalAkhir").addEventListener("change", renderRecords);
-  $("filterDates").addEventListener("click", renderRecords);
 
-$("resetDates").addEventListener("click", () => {
-  $("dateStart").value = "";
-  $("dateEnd").value = "";
-  renderRecords();
-});
   $("searchRecords").addEventListener("input", renderRecords);
   $("exportCsv").addEventListener("click", exportCsv);
 
