@@ -1269,6 +1269,13 @@ async function createPetugas(event) {
   });
 
   $("refreshRecords").addEventListener("click", loadRecords);
+  $("filterDates").addEventListener("click", renderRecords);
+
+$("resetDates").addEventListener("click", () => {
+  $("dateStart").value = "";
+  $("dateEnd").value = "";
+  renderRecords();
+});
   $("searchRecords").addEventListener("input", renderRecords);
   $("exportCsv").addEventListener("click", exportCsv);
 
