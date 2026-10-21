@@ -1030,7 +1030,7 @@ document.getElementById("addFieldButton")
     const dateEnd = $("dateEnd").value;
 
     const filtered = allRecords.filter(row => {
-    const searchText = (
+  const searchText = (
     row._formName + " " +
     row._userName + " " +
     JSON.stringify(row.data || {}) + " " +
@@ -1038,17 +1038,17 @@ document.getElementById("addFieldButton")
   ).toLowerCase();
 
   const recordDate = new Date(row.created_at);
-  const date = [
+  const tanggalData = [
     recordDate.getFullYear(),
     String(recordDate.getMonth() + 1).padStart(2, "0"),
     String(recordDate.getDate()).padStart(2, "0")
   ].join("-");
 
-  const matchSearch = searchText.includes(query);
-  const matchStart = !dateStart || date >= dateStart;
-  const matchEnd = !dateEnd || date <= dateEnd;
+  const cocokPencarian = searchText.includes(query);
+  const cocokMulai = !tanggalMulai || tanggalData >= tanggalMulai;
+  const cocokAkhir = !tanggalAkhir || tanggalData <= tanggalAkhir;
 
-  return matchSearch && matchStart && matchEnd;
+  return cocokPencarian && cocokMulai && cocokAkhir;
 });
 
     if (!filtered.length) {
