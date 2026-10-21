@@ -1024,11 +1024,13 @@ document.getElementById("addFieldButton")
 
   function renderRecords() {
     const query = $("searchRecords").value.toLowerCase().trim();
-const dateStart = $("dateStart").value;
-const dateEnd = $("dateEnd").value;
+    const tanggalMulai = $("filterTanggalMulai").value;
+    const tanggalAkhir = $("filterTanggalAkhir").value;
+    const dateStart = $("dateStart").value;
+    const dateEnd = $("dateEnd").value;
 
-const filtered = allRecords.filter(row => {
-  const searchText = (
+    const filtered = allRecords.filter(row => {
+    const searchText = (
     row._formName + " " +
     row._userName + " " +
     JSON.stringify(row.data || {}) + " " +
