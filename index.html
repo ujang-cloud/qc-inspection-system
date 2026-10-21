@@ -1070,11 +1070,31 @@ document.getElementById("addFieldButton")
   function exportCsv() {
     const query = $("searchRecords").value.toLowerCase().trim();
 
-    const rows = allRecords.filter(row =>
-      (row._formName + " " + row._userName + " " +
-       JSON.stringify(row.data || {}) + " " + (row.catatan || ""))
-        .toLowerCase().includes(query)
-    );
+    const tanggalMulai = $("filterTanggalMulai").value;
+const tanggalAkhir = $("filterTanggalAkhir").value;
+
+const rows = allRecords.filter(row => {
+  const searchText = (
+    row._formName + " " +
+    row._userName + " " +
+    JSON.stringify(row.data || {}) + " " +
+    (row.catatan || "")
+  ).toLowerCase();
+
+  const recordDate = new Date(row.created_at);
+
+  const tanggalData = [
+    recordDate.getFullYear(),
+    String(recordDate.getMonth() + 1).padStart(2, "0"),
+    String(recordDate.getDate()).padStart(2, "0")
+  ].join("-");
+
+  const cocokPencarian = searchText.includes(query);
+  const cocokMulai = !tanggalMulai || tanggalData >= tanggalMulai;
+  const cocokAkhir = !tanggalAkhir || tanggalData <= tanggalAkhir;
+
+  return cocokPencarian && cocokMulai && cocokAkhir;
+});
 
     const csvCell = value =>
       '"' + String(value ?? "").replace(/"/g, '""') + '"';
