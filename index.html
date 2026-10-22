@@ -1049,13 +1049,19 @@ document.getElementById("addFieldButton")
     }
 
     $("recordsBody").innerHTML = filtered.map(row => `
-      <tr>
-        <td>${escapeHtml(new Date(row.created_at).toLocaleString("id-ID"))}</td>
-        <td>${escapeHtml(row._formName)}</td>
-        <td>${escapeHtml(row._userName)}</td>
-        <td>${escapeHtml(JSON.stringify(row.data || {}))}${row.catatan ? "<br>" + escapeHtml(row.catatan) : ""}</td>
-      </tr>
-    `).join("");
+  <tr>
+    <td>${escapeHtml(new Date(row.created_at).toLocaleString("id-ID"))}</td>
+    <td>${escapeHtml(row._formName)}</td>
+    <td>${escapeHtml(row._userName)}</td>
+    <td>${escapeHtml(JSON.stringify(row.data || {}))}${row.catatan ? "<br>" + escapeHtml(row.catatan) : ""}</td>
+    <td>
+      <button type="button" class="secondary"
+        onclick="editInspection('${row.id}')">Edit</button>
+      <button type="button"
+        onclick="deleteInspection('${row.id}')">Hapus</button>
+    </td>
+  </tr>
+`).join("");
   }
 
   function exportCsv() {
