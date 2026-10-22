@@ -1014,7 +1014,33 @@ document.getElementById("addFieldButton")
 
     renderRecords();
   }
+  async function deleteInspection(id) {
+  if (!isAdmin()) {
+    message("Hanya Admin yang boleh menghapus data inspeksi.", true);
+    return;
+  }
 
+  const yakin = confirm(
+    "Apakah kamu yakin ingin menghapus data inspeksi ini? Data yang dihapus tidak dapat dikembalikan."
+  );
+
+  if (!yakin) return;
+
+  try {
+    const { error } = await client
+      .from("inspections")
+      .delete()
+      .eq("id", id);
+
+    if (error) throw error;
+
+    message("Data inspeksi berhasil dihapus.");
+    await loadRecords();
+    await loadDashboard();
+  } catch (error) {
+    message("Gagal menghapus data: " + error.message, true);
+  }
+}
   function renderRecords() {
     const query = $("searchRecords").value.toLowerCase().trim();
     const tanggalMulai = $("filterTanggalMulai").value;
