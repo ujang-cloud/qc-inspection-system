@@ -1055,11 +1055,13 @@ document.getElementById("addFieldButton")
     <td>${escapeHtml(row._userName)}</td>
     <td>${escapeHtml(JSON.stringify(row.data || {}))}${row.catatan ? "<br>" + escapeHtml(row.catatan) : ""}</td>
     <td>
-      <button type="button" class="secondary"
-        onclick="editInspection('${row.id}')">Edit</button>
-      <button type="button"
-        onclick="deleteInspection('${row.id}')">Hapus</button>
-    </td>
+    ${isAdmin() ? `
+    <button type="button" class="secondary"
+      onclick="editInspection('${row.id}')">Edit</button>
+    <button type="button"
+      onclick="deleteInspection('${row.id}')">Hapus</button>
+  ` : '<span>-</span>'}
+     </td>
   </tr>
 `).join("");
   }
