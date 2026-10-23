@@ -987,7 +987,20 @@ document.getElementById("addFieldButton")
   }
 
   try {
-    const { error } = await client
+  let error;
+
+  if (editingInspectionId) {
+    const result = await client
+      .from("inspections")
+      .update({
+        data: values,
+        catatan: notes
+      })
+      .eq("id", editingInspectionId);
+
+    error = result.error;
+  } else {
+    const result = await client
       .from("inspections")
       .insert({
         form_id: currentForm.id,
@@ -996,7 +1009,10 @@ document.getElementById("addFieldButton")
         catatan: notes
       });
 
-    if (error) throw error;
+    error = result.error;
+  }
+
+  if (error) throw error;
 
     $("inspectionForm").reset();
     $("inspectionPanel").classList.add("hidden");
