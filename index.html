@@ -918,18 +918,15 @@ document.getElementById("addFieldButton")
     openInspectionForm(form);
 
     const fields = Array.isArray(form.fields) ? form.fields : [];
-    const values = record.data || {};
+const values = record.data || {};
 
-    fields.forEach((field, index) => {
-      const fieldName = field.name || "field_" + (index + 1);
-      const input = document.querySelector(
-        '#inspectionFields [data-field-name="' + fieldName + '"]'
-      );
+fields.forEach((field, index) => {
+  const input = document.getElementById(`field_${index}`);
 
-      if (input) {
-        input.value = values[field.label || fieldName] ?? "";
-      }
-    });
+  if (input) {
+    input.value = values[field.label] ?? "";
+  }
+});
 
     const notes = document.getElementById("inspectionNotes");
     if (notes) notes.value = record.catatan || "";
