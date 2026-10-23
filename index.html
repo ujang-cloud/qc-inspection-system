@@ -1014,13 +1014,29 @@ document.getElementById("addFieldButton")
 
   if (error) throw error;
 
-    $("inspectionForm").reset();
-    $("inspectionPanel").classList.add("hidden");
-    currentForm = null;
+    const sedangEdit = Boolean(editingInspectionId);
 
-    message("Data inspeksi berhasil disimpan.");
+$("inspectionForm").reset();
+$("inspectionPanel").classList.add("hidden");
 
-    await loadDashboard();
+currentForm = null;
+editingInspectionId = null;
+
+const submitButton = document.querySelector(
+  '#inspectionForm button[type="submit"]'
+);
+
+if (submitButton) {
+  submitButton.textContent = "Simpan Inspeksi";
+}
+
+message(
+  sedangEdit
+    ? "Data inspeksi berhasil diperbarui."
+    : "Data inspeksi berhasil disimpan."
+);
+
+await loadDashboard();
 
   } catch (error) {
     message("Gagal menyimpan inspeksi: " + error.message, true);
