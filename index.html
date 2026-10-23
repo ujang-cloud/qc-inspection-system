@@ -891,6 +891,60 @@ document.getElementById("addFieldButton")
     behavior: "smooth"
   });
 }
+  async function editInspection(id) {
+  if (!isAdmin()) {
+    message("Hanya admin yang boleh mengedit data inspeksi.", true);
+    return;
+  }
+
+  try {
+    const { data: record, error } = await client
+      .from("inspections")
+      .select("id, form_id, data, catatan")
+      .eq("id", id)
+      .single();
+
+    if (error) throw error;
+
+    const { data: form, error: formError } = await client
+      .from("inspection_forms")
+      .select("id, nama_form, fields")
+      .eq("id", record.form_id)
+      .single();
+
+    if (formError) throw formError;
+
+    editingInspectionId = record.id;
+    openInspectionForm(form);
+
+    const fields = Array.isArray(form.fields) ? form.fields : [];
+    const values = record.data || {};
+
+    fields.forEach((field, index) => {
+      const fieldName = field.name || "field_" + (index + 1);
+      const input = document.querySelector(
+        '#inspectionFields [data-field-name="' + fieldName + '"]'
+      );
+
+      if (input) {
+        input.value = values[field.label || fieldName] ?? "";
+      }
+    });
+
+    const notes = document.getElementById("inspectionNotes");
+    if (notes) notes.value = record.catatan || "";
+
+    const submitButton = document.querySelector(
+      '#inspectionForm button[type="submit"]'
+    );
+
+    if (submitButton) submitButton.textContent = "Perbarui Inspeksi";
+
+    message("Mode edit aktif. Periksa data lalu tekan Perbarui Inspeksi.");
+  } catch (error) {
+    message("Gagal membuka data untuk diedit: " + error.message, true);
+  }
+}
 
   async function saveInspection(event) {
   event.preventDefault();
