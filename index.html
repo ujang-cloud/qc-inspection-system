@@ -942,6 +942,7 @@ fields.forEach((field, index) => {
     message("Gagal membuka data untuk diedit: " + error.message, true);
   }
 }
+  window.editInspection = editInspection;
   async function deleteInspection(id) {
   if (!isAdmin()) {
     message("Hanya admin yang boleh menghapus data inspeksi.", true);
