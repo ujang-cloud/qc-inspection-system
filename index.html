@@ -945,6 +945,43 @@ document.getElementById("addFieldButton")
     message("Gagal membuka data untuk diedit: " + error.message, true);
   }
 }
+  async function deleteInspection(id) {
+  if (!isAdmin()) {
+    message("Hanya admin yang boleh menghapus data inspeksi.", true);
+    return;
+  }
+
+  const yakin = confirm(
+    "Apakah Anda yakin ingin menghapus data inspeksi ini? Data yang dihapus tidak dapat dikembalikan."
+  );
+
+  if (!yakin) return;
+
+  try {
+    const { data, error } = await client
+      .from("inspections")
+      .delete()
+      .eq("id", id)
+      .select("id");
+
+    if (error) throw error;
+
+    if (!data || data.length === 0) {
+      throw new Error("Data tidak ditemukan atau akses ditolak.");
+    }
+
+    message("Data inspeksi berhasil dihapus.");
+
+    await loadRecords();
+    await loadDashboard();
+
+  } catch (error) {
+    message(
+      "Gagal menghapus inspeksi: " + error.message,
+      true
+    );
+  }
+}
 
   async function saveInspection(event) {
   event.preventDefault();
