@@ -921,7 +921,7 @@ document.getElementById("addFieldButton")
 const values = record.data || {};
 
 fields.forEach((field, index) => {
-  const input = document.getElementById(`field_${index}`);
+  const input = document.getElementById(`inspection_${index}`);
 
   if (input) {
     input.value = values[field.label] ?? "";
