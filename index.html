@@ -943,6 +943,10 @@ fields.forEach((field, index) => {
   }
 }
   window.editInspection = editInspection;
+  window.deleteInspection = deleteInspection;
+
+console.log("Fungsi Edit:", typeof window.editInspection);
+console.log("Fungsi Hapus:", typeof window.deleteInspection);
   async function deleteInspection(id) {
   if (!isAdmin()) {
     message("Hanya admin yang boleh menghapus data inspeksi.", true);
