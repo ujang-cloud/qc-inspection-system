@@ -916,6 +916,7 @@ document.getElementById("addFieldButton")
 
     editingInspectionId = record.id;
     openInspectionForm(form);
+    showPage("inspection");
 
     const fields = Array.isArray(form.fields) ? form.fields : [];
 const values = record.data || {};
