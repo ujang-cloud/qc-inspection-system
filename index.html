@@ -896,6 +896,7 @@ document.getElementById("addFieldButton")
     message("Hanya admin yang boleh mengedit data inspeksi.", true);
     return;
   }
+    alert("Fungsi Edit terpanggil. ID: " + id);
 
   try {
     const { data: record, error } = await client
