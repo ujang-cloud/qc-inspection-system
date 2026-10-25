@@ -374,6 +374,61 @@
           </div>
         </section>
 
+        <section id="page-analisa" class="hidden">
+  <h2 class="page-title">☕ Analisa Kopi</h2>
+
+  <div class="panel">
+    <h3>Data Sampel</h3>
+
+    <label for="kodeSampel">Kode Sampel</label>
+    <input id="kodeSampel" type="text"
+      placeholder="Contoh: KP-2026-001" required>
+
+    <label for="tanggalProduksi">Tanggal Produksi</label>
+    <input id="tanggalProduksi" type="date" required>
+
+    <label for="tipeProduk">Tipe Produk</label>
+    <input id="tipeProduk" type="text"
+      placeholder="Masukkan tipe produk" required>
+
+    <label for="jumlahKantong">Jumlah Kantong</label>
+    <input id="jumlahKantong" type="number"
+      min="1" placeholder="Jumlah kantong" required>
+
+    <button type="button" id="simpanSampel">
+      Simpan Data Sampel
+    </button>
+
+    <p id="pesanAnalisa" class="status hidden"></p>
+  </div>
+
+  <div class="panel">
+    <h3>Daftar Sampel</h3>
+
+    <button type="button" id="muatSampel">
+      Muat Ulang Sampel
+    </button>
+
+    <div class="table-wrap" style="margin-top:15px">
+      <table>
+        <thead>
+          <tr>
+            <th>Kode Sampel</th>
+            <th>Tanggal Produksi</th>
+            <th>Tipe Produk</th>
+            <th>Jumlah Kantong</th>
+          </tr>
+        </thead>
+        <tbody id="daftarSampel">
+          <tr>
+            <td colspan="4">Belum ada data.</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</section>
+
         <section id="page-users" class="hidden">
           <h2 class="page-title">Data Petugas</h2>
           <div class="panel">
