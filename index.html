@@ -1519,7 +1519,95 @@ async function createPetugas(event) {
 
   $("searchRecords").addEventListener("input", renderRecords);
   $("exportCsv").addEventListener("click", exportCsv);
+// SIMPAN DATA SAMPEL
+$("simpanSampel").addEventListener("click", async () => {
+  if (!client || !currentUser) {
+    $("pesanAnalisa").textContent =
+      "Silakan login terlebih dahulu.";
+    $("pesanAnalisa").classList.remove("hidden");
+    return;
+  }
 
+  const kode = $("kodeSampel").value.trim();
+  const tanggal = $("tanggalProduksi").value;
+  const tipe = $("tipeProduk").value.trim();
+  const jumlah = Number($("jumlahKantong").value);
+  const pesan = $("pesanAnalisa");
+
+  if (!kode || !tanggal || !tipe || !jumlah || jumlah < 1) {
+    pesan.textContent = "Lengkapi semua data sampel.";
+    pesan.classList.remove("hidden");
+    return;
+  }
+
+  try {
+    const { error } = await client
+      .from("qc_samples")
+      .insert({
+        kode_sampel: kode,
+        tanggal_produksi: tanggal,
+        tipe_produk: tipe,
+        jumlah_kantong: jumlah,
+        status: "aktif",
+        created_by: currentUser.id
+      });
+
+    if (error) throw error;
+
+    pesan.textContent = "Data sampel berhasil disimpan.";
+    pesan.classList.remove("hidden");
+
+    $("kodeSampel").value = "";
+    $("tanggalProduksi").value = "";
+    $("tipeProduk").value = "";
+    $("jumlahKantong").value = "";
+
+    await muatDaftarSampel();
+
+  } catch (error) {
+    pesan.textContent = "Gagal menyimpan: " + error.message;
+    pesan.classList.remove("hidden");
+  }
+});
+
+
+// MUAT DAFTAR SAMPEL
+async function muatDaftarSampel() {
+  const daftar = $("daftarSampel");
+
+  try {
+    const { data, error } = await client
+      .from("qc_samples")
+      .select("kode_sampel, tanggal_produksi, tipe_produk, jumlah_kantong")
+      .eq("status", "aktif")
+      .order("created_at", { ascending: false });
+
+    if (error) throw error;
+
+    if (!data || data.length === 0) {
+      daftar.innerHTML =
+        '<tr><td colspan="4">Belum ada data sampel.</td></tr>';
+      return;
+    }
+
+    daftar.innerHTML = data.map(sampel => `
+      <tr>
+        <td>${escapeHtml(sampel.kode_sampel)}</td>
+        <td>${escapeHtml(sampel.tanggal_produksi)}</td>
+        <td>${escapeHtml(sampel.tipe_produk)}</td>
+        <td>${escapeHtml(String(sampel.jumlah_kantong))}</td>
+      </tr>
+    `).join("");
+
+  } catch (error) {
+    daftar.innerHTML =
+      '<tr><td colspan="4">Gagal memuat data sampel: ' +
+      escapeHtml(error.message) +
+      '</td></tr>';
+  }
+}
+
+$("muatSampel").addEventListener("click", muatDaftarSampel);
   start();
 })();
 </script>
