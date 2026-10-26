@@ -613,11 +613,18 @@
   }
 
   async function enterApp() {
-    $("loginScreen").style.display = "none";
-    $("appScreen").style.display = "block";
-    setRoleVisibility();
-    showPage("dashboard");
+  $("loginScreen").style.display = "none";
+  $("appScreen").style.display = "block";
+
+  setRoleVisibility();
+  showPage("dashboard");
+
+  if (isAdmin()) {
+    await muatDaftarSampel();
   }
+
+  await muatPilihanSampelAnalisa();
+}
 
   async function loadDashboard() {
     try {
@@ -1638,7 +1645,35 @@ async function muatDaftarSampel() {
       '</td></tr>';
   }
 }
+// MUAT PILIHAN SAMPEL UNTUK ANALISA
+async function muatPilihanSampelAnalisa() {
+  const pilihan = $("pilihSampelAnalisa");
 
+  pilihan.innerHTML = '<option value="">Memuat sampel...</option>';
+
+  try {
+    const { data, error } = await client
+      .from("qc_samples")
+      .select("id, kode_sampel")
+      .eq("status", "aktif")
+      .order("created_at", { ascending: false });
+
+    if (error) throw error;
+
+    pilihan.innerHTML = '<option value="">Pilih sampel...</option>';
+
+    (data || []).forEach(sampel => {
+      const option = document.createElement("option");
+      option.value = sampel.id;
+      option.textContent = sampel.kode_sampel;
+      pilihan.appendChild(option);
+    });
+
+  } catch (error) {
+    pilihan.innerHTML = '<option value="">Gagal memuat sampel</option>';
+    console.error("Gagal memuat pilihan sampel:", error);
+  }
+}
 $("muatSampel").addEventListener("click", muatDaftarSampel);
   start();
 })();
