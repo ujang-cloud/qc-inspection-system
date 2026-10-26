@@ -428,7 +428,39 @@
     </div>
   </div>
 </section>
+<section id="page-hasil-analisa" class="hidden">
+  <h2 class="page-title">☕ Hasil Analisa Kopi</h2>
 
+  <div class="panel">
+    <h3>Formulir Hasil Analisa</h3>
+
+    <label for="pilihSampelAnalisa">Kode Sampel</label>
+    <select id="pilihSampelAnalisa" required>
+      <option value="">Pilih sampel...</option>
+    </select>
+
+    <label for="aromaKopi">Aroma Kopi (1–5)</label>
+    <input id="aromaKopi" type="number" min="1" max="5" required>
+
+    <label for="keasaman">Keasaman (1–5)</label>
+    <input id="keasaman" type="number" min="1" max="5" required>
+
+    <label for="rasaPahit">Rasa Pahit (1–5)</label>
+    <input id="rasaPahit" type="number" min="1" max="5" required>
+
+    <label for="warnaSeduhan">Warna Seduhan (1–5)</label>
+    <input id="warnaSeduhan" type="number" min="1" max="5" required>
+
+    <label for="afterTaste">After Taste (1–5)</label>
+    <input id="afterTaste" type="number" min="1" max="5" required>
+
+    <button type="button" id="simpanHasilAnalisa">
+      Simpan Hasil Analisa
+    </button>
+
+    <p id="pesanHasilAnalisa" class="status hidden"></p>
+  </div>
+</section>
         <section id="page-users" class="hidden">
           <h2 class="page-title">Data Petugas</h2>
           <div class="panel">
