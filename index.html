@@ -1674,6 +1674,75 @@ async function muatPilihanSampelAnalisa() {
     console.error("Gagal memuat pilihan sampel:", error);
   }
 }
+  // SIMPAN HASIL ANALISA KOPI
+$("simpanHasilAnalisa").addEventListener("click", async () => {
+  if (!client || !currentUser) {
+    $("pesanHasilAnalisa").textContent = "Silakan login terlebih dahulu.";
+    $("pesanHasilAnalisa").classList.remove("hidden");
+    return;
+  }
+
+  const sampleId = $("pilihSampelAnalisa").value;
+  const aroma = Number($("aromaKopi").value);
+  const keasaman = Number($("keasaman").value);
+  const rasaPahit = Number($("rasaPahit").value);
+  const warna = Number($("warnaSeduhan").value);
+  const afterTaste = Number($("afterTaste").value);
+  const pesan = $("pesanHasilAnalisa");
+
+  if (
+    !sampleId ||
+    !$("aromaKopi").value ||
+    !$("keasaman").value ||
+    !$("rasaPahit").value ||
+    !$("warnaSeduhan").value ||
+    !$("afterTaste").value
+  ) {
+    pesan.textContent = "Pilih sampel dan lengkapi semua hasil analisa.";
+    pesan.classList.remove("hidden");
+    return;
+  }
+
+  if (
+    [aroma, keasaman, rasaPahit, warna, afterTaste]
+      .some(nilai => !Number.isInteger(nilai) || nilai < 1 || nilai > 5)
+  ) {
+    pesan.textContent = "Nilai analisa harus antara 1 sampai 5.";
+    pesan.classList.remove("hidden");
+    return;
+  }
+
+  try {
+    const { error } = await client
+      .from("qc_analysis_results")
+      .insert({
+        sample_id: sampleId,
+        analis_id: currentUser.id,
+        aroma_kopi: aroma,
+        keasaman: keasaman,
+        rasa_pahit: rasaPahit,
+        warna_seduhan: warna,
+        after_taste: afterTaste,
+        status: "terkirim"
+      });
+
+    if (error) throw error;
+
+    pesan.textContent = "Hasil analisa berhasil disimpan.";
+    pesan.classList.remove("hidden");
+
+    $("pilihSampelAnalisa").value = "";
+    $("aromaKopi").value = "";
+    $("keasaman").value = "";
+    $("rasaPahit").value = "";
+    $("warnaSeduhan").value = "";
+    $("afterTaste").value = "";
+
+  } catch (error) {
+    pesan.textContent = "Gagal menyimpan hasil analisa: " + error.message;
+    pesan.classList.remove("hidden");
+  }
+});
 $("muatSampel").addEventListener("click", muatDaftarSampel);
   start();
 })();
