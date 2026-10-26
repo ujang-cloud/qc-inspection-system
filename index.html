@@ -1521,12 +1521,12 @@ async function createPetugas(event) {
   $("exportCsv").addEventListener("click", exportCsv);
 // SIMPAN DATA SAMPEL
 $("simpanSampel").addEventListener("click", async () => {
-  if (!client || !currentUser) {
-    $("pesanAnalisa").textContent =
-      "Silakan login terlebih dahulu.";
-    $("pesanAnalisa").classList.remove("hidden");
-    return;
-  }
+  if (!client || !currentUser || !isAdmin()) {
+  $("pesanAnalisa").textContent =
+    "Hanya Admin yang boleh menambahkan data sampel.";
+  $("pesanAnalisa").classList.remove("hidden");
+  return;
+}
 
   const kode = $("kodeSampel").value.trim();
   const tanggal = $("tanggalProduksi").value;
